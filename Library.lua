@@ -287,10 +287,10 @@ local Templates = {
 
     --// Library \\--
     Window = {
-        Title = "No Title",
-        Footer = "No Footer",
+        Title = "Midgard",
+        Footer = "",
         Position = UDim2.fromOffset(6, 6),
-        Size = UDim2.fromOffset(720, 480),
+        Size = UDim2.fromOffset(600, 520),
         IconSize = UDim2.fromOffset(30, 30),
         AutoShow = true,
         Center = true,
@@ -299,13 +299,14 @@ local Templates = {
         GlobalSearch = false,
         CornerRadius = 4,
         NotifySide = "Right",
-        ShowCustomCursor = true,
-        Font = Enum.Font.Code,
+        ShowCustomCursor = false,
+        Font = Enum.Font.RobotoMono,
         ToggleKeybind = Enum.KeyCode.RightControl,
         MobileButtonsSide = "Left",
         UnlockMouseWhileOpen = true,
+        Icon = "rbxassetid://86720583626882",
 
-        EnableSidebarResize = false,
+        EnableSidebarResize = true,
         EnableCompacting = true,
         DisableCompactingSnap = false,
         SidebarCompacted = true,
