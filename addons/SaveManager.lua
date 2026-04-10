@@ -76,12 +76,58 @@ local SaveManager = {} do
         },
         Dropdown = {
             Save = function(idx, object)
-                return { type = "Dropdown", idx = idx, value = object.Value, multi = object.Multi }
+                local value = object.Value
+                if object.SpecialType == "Player" then
+                    if object.Multi then
+                        local names = {}
+                        for k, v in pairs(value or {}) do
+                            if typeof(k) == "Instance" and k:IsA("Player") then
+                                names[k.Name] = v
+                            else
+                                names[tostring(k)] = v
+                            end
+                        end
+                        value = names
+                    else
+                        if typeof(value) == "Instance" and value:IsA("Player") then
+                            value = value.Name
+                        end
+                    end
+                end
+                return { type = "Dropdown", idx = idx, value = value, multi = object.Multi }
             end,
             Load = function(idx, data)
                 local object = SaveManager.Library.Options[idx]
-                if object and object.Value ~= data.value then
-                    object:SetValue(data.value)
+                if not object then return end
+
+                local value = data.value
+                if object.SpecialType == "Player" then
+                    local Players = game:GetService("Players")
+                    if data.multi then
+                        if typeof(value) == "table" then
+                            local resolved = {}
+                            for name, v in pairs(value) do
+                                local player = Players:FindFirstChild(tostring(name))
+                                if player and player:IsA("Player") then
+                                    resolved[player] = v
+                                end
+                            end
+                            value = resolved
+                        end
+                    else
+                        if typeof(value) == "string" and value ~= "" then
+                            local player = Players:FindFirstChild(value)
+                            if player and player:IsA("Player") then
+                                value = player
+                            else
+                                return
+                            end
+                        end
+                    end
+                end
+
+                if object.Value ~= value then
+                    object:SetValue(value)
                 end
             end,
         },
