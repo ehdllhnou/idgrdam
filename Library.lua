@@ -1138,6 +1138,7 @@ end
 local ScreenGui = New("ScreenGui", {
     Name = "Midgard",
     DisplayOrder = 999,
+    IgnoreGuiInset = true,
     ResetOnSpawn = false,
 })
 ParentUI(ScreenGui)
@@ -1603,12 +1604,46 @@ function Library:AddDraggableButton(Text: string, Func, ExcludeScaling: boolean?
 
     Table.Button = Button
 
+    local IconImage
+
     function Table:SetText(Text: string)
+        if IconImage then
+            IconImage.Visible = false
+        end
         local X, Y = Library:GetTextBounds(Text, Library.Scheme.Font, 16)
 
         Button.Text = Text
         Button.Size = UDim2.fromOffset(X * 2, Y * 2)
     end
+
+    function Table:SetIcon(IconName: string, Size: number?)
+        Size = Size or 32
+        local Icon = Library:GetCustomIcon(IconName)
+        if not Icon then
+            return
+        end
+
+        Button.Text = ""
+        Button.Size = UDim2.fromOffset(Size, Size)
+
+        if not IconImage then
+            IconImage = New("ImageLabel", {
+                AnchorPoint = Vector2.new(0.5, 0.5),
+                BackgroundTransparency = 1,
+                Position = UDim2.fromScale(0.5, 0.5),
+                ImageColor3 = "FontColor",
+                ZIndex = 11,
+                Parent = Button,
+            })
+        end
+
+        IconImage.Size = UDim2.fromOffset(Size * 0.6, Size * 0.6)
+        IconImage.Image = Icon.Url or Icon
+        IconImage.ImageRectOffset = Icon.ImageRectOffset or Vector2.zero
+        IconImage.ImageRectSize = Icon.ImageRectSize or Vector2.zero
+        IconImage.Visible = true
+    end
+
     Table:SetText(Text)
 
     return Table
@@ -8714,21 +8749,18 @@ function Library:CreateWindow(WindowInfo)
         local ToggleButton = Library:AddDraggableButton("Toggle", function()
             Library:Toggle()
         end, true)
+        ToggleButton:SetIcon("rbxassetid://86720583626882", 40)
+        ToggleButton.Button.AnchorPoint = Vector2.new(0, 1)
+        ToggleButton.Button.Position = UDim2.new(0, 6, 1, -6)
 
+        --[[ Lock button (hidden for now)
         local LockButton = Library:AddDraggableButton("Lock", function(self)
             Library.CantDragForced = not Library.CantDragForced
             self:SetText(Library.CantDragForced and "Unlock" or "Lock")
         end, true)
-
-        if WindowInfo.MobileButtonsSide == "Right" then
-            ToggleButton.Button.Position = UDim2.new(1, -6, 0, 6)
-            ToggleButton.Button.AnchorPoint = Vector2.new(1, 0)
-
-            LockButton.Button.Position = UDim2.new(1, -6, 0, 46)
-            LockButton.Button.AnchorPoint = Vector2.new(1, 0)
-        else
-            LockButton.Button.Position = UDim2.fromOffset(6, 46)
-        end
+        LockButton.Button.AnchorPoint = Vector2.new(0, 1)
+        LockButton.Button.Position = UDim2.new(0, 52, 1, -6)
+        ]]
     end
 
     --// Execution \\--
