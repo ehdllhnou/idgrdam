@@ -1814,15 +1814,16 @@ function Library:AddContextMenu(
         CurrentMenu = Table
         Table.Active = true
 
+        local guiInset = game:GetService("GuiService"):GetGuiInset()
         if typeof(Offset) == "function" then
             Menu.Position = UDim2.fromOffset(
-                math.floor(Holder.AbsolutePosition.X + Offset()[1]),
-                math.floor(Holder.AbsolutePosition.Y + Offset()[2])
+                Holder.AbsolutePosition.X + Offset()[1],
+                math.floor(Holder.AbsolutePosition.Y + Offset()[2] + guiInset.Y)
             )
         else
             Menu.Position = UDim2.fromOffset(
-                math.floor(Holder.AbsolutePosition.X + Offset[1]),
-                math.floor(Holder.AbsolutePosition.Y + Offset[2])
+                Holder.AbsolutePosition.X + Offset[1],
+                math.floor(Holder.AbsolutePosition.Y + Offset[2] + guiInset.Y)
             )
         end
         Menu.Size = typeof(Table.Size) == "function" and Table.Size() or Table.Size
@@ -1833,15 +1834,16 @@ function Library:AddContextMenu(
         Menu.Visible = true
 
         Table.Signal = Holder:GetPropertyChangedSignal("AbsolutePosition"):Connect(function()
+            local guiInset = game:GetService("GuiService"):GetGuiInset()
             if typeof(Offset) == "function" then
                 Menu.Position = UDim2.fromOffset(
-                    math.floor(Holder.AbsolutePosition.X + Offset()[1]),
-                    math.floor(Holder.AbsolutePosition.Y + Offset()[2])
+                    Holder.AbsolutePosition.X + Offset()[1],
+                    math.floor(Holder.AbsolutePosition.Y + Offset()[2] + guiInset.Y)
                 )
             else
                 Menu.Position = UDim2.fromOffset(
-                    math.floor(Holder.AbsolutePosition.X + Offset[1]),
-                    math.floor(Holder.AbsolutePosition.Y + Offset[2])
+                    Holder.AbsolutePosition.X + Offset[1],
+                    math.floor(Holder.AbsolutePosition.Y + Offset[2] + guiInset.Y)
                 )
             end
         end)
@@ -4770,10 +4772,10 @@ do
         local MenuTable = Library:AddContextMenu(
             Display,
             function()
-                return UDim2.fromOffset(Display.AbsoluteSize.X / Library.DPIScale, 0)
+                return UDim2.fromOffset(math.ceil(Display.AbsoluteSize.X / Library.DPIScale), 0)
             end,
             function()
-                return { 0.5, Display.AbsoluteSize.Y + 1.5 }
+                return { 0, Display.AbsoluteSize.Y + 1 }
             end,
             2,
             function(Active: boolean)
@@ -4793,7 +4795,7 @@ do
             local Y = math.clamp((Count or GetTableSize(Dropdown.Values)) * 21, 0, Info.MaxVisibleDropdownItems * 21)
 
             MenuTable:SetSize(function()
-                return UDim2.fromOffset(Display.AbsoluteSize.X / Library.DPIScale, Y)
+                return UDim2.fromOffset(math.ceil(Display.AbsoluteSize.X / Library.DPIScale), Y)
             end)
         end
 
