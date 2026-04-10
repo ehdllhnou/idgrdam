@@ -6333,15 +6333,16 @@ end
 function Library:CreateWindow(WindowInfo)
     WindowInfo = Library:Validate(WindowInfo, Templates.Window)
     local ViewportSize: Vector2 = workspace.CurrentCamera.ViewportSize
-    if RunService:IsStudio() and ViewportSize.X <= 5 and ViewportSize.Y <= 5 then
+    if ViewportSize.X <= 5 or ViewportSize.Y <= 5 then
         repeat
             ViewportSize = workspace.CurrentCamera.ViewportSize
             task.wait()
         until ViewportSize.X > 5 and ViewportSize.Y > 5
     end
 
-    local MaxX = ViewportSize.X - 64
-    local MaxY = ViewportSize.Y - 64
+    local Margin = Library.IsMobile and 10 or 64
+    local MaxX = ViewportSize.X - Margin
+    local MaxY = ViewportSize.Y - Margin
 
     Library.OriginalMinSize =
         Vector2.new(math.min(Library.OriginalMinSize.X, MaxX), math.min(Library.OriginalMinSize.Y, MaxY))
@@ -6463,7 +6464,8 @@ function Library:CreateWindow(WindowInfo)
         end
 
         if WindowInfo.Center then
-            MainFrame.Position = UDim2.new(0.5, -MainFrame.Size.X.Offset / 2, 0.5, -MainFrame.Size.Y.Offset / 2)
+            MainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+            MainFrame.Position = UDim2.fromScale(0.5, 0.5)
         end
 
         --// Top Bar \\-
@@ -8708,6 +8710,7 @@ function Library:CreateWindow(WindowInfo)
     end
 
     if Library.IsMobile then
+        Library:SetDPIScale(75)
         local ToggleButton = Library:AddDraggableButton("Toggle", function()
             Library:Toggle()
         end, true)
