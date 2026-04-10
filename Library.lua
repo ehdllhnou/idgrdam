@@ -5963,7 +5963,7 @@ do
             end
         end
 
-        local ArrowIcon = Library:GetIcon("chevron-up")
+        local ArrowIcon = Library:GetIcon("chevron-down")
         local Arrow = New("ImageLabel", {
             AnchorPoint = Vector2.new(1, 0.5),
             Image = ArrowIcon.Url,
@@ -5998,7 +5998,7 @@ do
                 self:Resize()
             end
 
-            local Icon = Library:GetIcon(Collapsed and "chevron-down" or "chevron-up")
+            local Icon = Library:GetIcon(Collapsed and "chevron-up" or "chevron-down")
             Arrow.Image = Icon.Url
             Arrow.ImageRectOffset = Icon.ImageRectOffset
             Arrow.ImageRectSize = Icon.ImageRectSize
@@ -6015,7 +6015,7 @@ do
             if DividerLine then DividerLine.Visible = false end
             task.defer(function()
                 Holder.Size = UDim2.new(1, 0, 0, 34)
-                local Icon = Library:GetIcon("chevron-down")
+                local Icon = Library:GetIcon("chevron-up")
                 Arrow.Image = Icon.Url
                 Arrow.ImageRectOffset = Icon.ImageRectOffset
                 Arrow.ImageRectSize = Icon.ImageRectSize
